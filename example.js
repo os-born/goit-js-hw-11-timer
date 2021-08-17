@@ -28,8 +28,8 @@ const refs = {
   
       this.intervalId = setInterval(() => {
         const currentTime = Date.now();
-        const time = currentTime - startTime;
-        const time = this.getTimeComponents(time);
+        const deltaTime = currentTime - startTime;
+        const time = this.getTimeComponents(deltaTime);
   
         this.onTick(time);
       }, 1000);

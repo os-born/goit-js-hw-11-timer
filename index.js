@@ -8,54 +8,50 @@ const refs = {
 
 
 class CountdownTimer {
-  constructor ({onTick}) {
-    this.selector = null;
-    this.targetDate = null;
-    this.onTick = onTick;
+  constructor ({targetDate, selector}) {
+    this.selector = selector;
+    this.targetDate = targetDate;
   }
-
+  
   init() {
     this.selector = setInterval(()=> {
-    this.targetDate = new Date('2021,9,1');
-    const currentTime = new Date();
-      
-    const time = this.targetDate - currentTime;
-    if (time <= 0) {
-      clearInterval(this.selector);
+      const time = this.targetDate - new Date();
+      if (time <= 0) {
+        clearInterval(this.selector);
+      }
+      const { days, hours, mins, secs } = this.getTimeValue(time);
+      this.updateTimerView(this.getTimeValue(time));
+      console.log(`${days} дней ${hours}:${mins}:${secs}`);
+    },1000)}
+    
+    updateTimerView({ days, hours, mins, secs }) {
+      refs.days.textContent = days;
+      refs.hours.textContent = hours;
+      refs.minutes.textContent = mins;
+      refs.seconds.textContent = secs;
     }
-    const { days, hours, mins, secs } = getTimeValue(time);
-    updateTimerView(getTimeValue(time));
-    console.log(`${days} дней ${hours}:${mins}:${secs}`);
-  },1000)}
+    
+    getTimeValue(time) {
+      const days = Math.floor(time / (1000 * 60 * 60 * 24));
+      const hours = this.pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+      const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
+      const secs = this.pad(Math.floor((time % (1000 * 60)) / 1000));
+      
+      return { days, hours, mins, secs };
+  }
+  
+  pad(value) {
+    return String(value).padStart(2, '0')
+  };
 
 }
 
 const countdownTimer = new CountdownTimer(
   {
     selector: '#timer-1',
-    targetDate: new Date('Jul 17, 2019'),
+    targetDate: new Date('Jul 17, 2022'),
   }
-);
-
-countdownTimer.init();
-
-function updateTimerView({ days, hours, mins, secs }) {
-  refs.days.textContent = pad(days);
-  refs.hours.textContent = pad(hours);
-  refs.minutes.textContent = pad(mins);
-  refs.seconds.textContent = pad(secs);
-}
-
-
-function getTimeValue(time) {
-  const days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-  const hours = pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-  const mins = pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-  const secs = pad(Math.floor((time % (1000 * 60)) / 1000));
-
-  return { days, hours, mins, secs };
-}
-
-function pad(value) {
-  return String(value).padStart(2, '0')
-}
+  );
+  
+  countdownTimer.init()
+    
